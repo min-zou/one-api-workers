@@ -11,12 +11,13 @@ import { BreakdownChartCard } from "@/components/analytics/BreakdownChartCard";
 import { TrendBarChart } from "@/components/analytics/TrendBarChart";
 import { PageContainer } from "@/components/ui/page-container";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useBillingConfig } from "@/hooks/use-billing-config";
 import { readScopedCache, writeScopedCache } from "@/lib/local-cache";
 import { cn, formatCompactNumber, formatCurrency } from "@/lib/utils";
-import { Activity, CircleDollarSign, Clock3, DatabaseZap, RefreshCw, ShieldCheck } from "lucide-react";
+import { Activity, CircleDollarSign, Clock3, DatabaseZap, RefreshCw, ShieldCheck, AlertTriangle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -252,6 +253,18 @@ export function Analytics() {
       }
     >
       <div className="space-y-6">
+        {overviewQuery.isError && (
+          <Alert variant="warning">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>{t('analytics.loadFailed')}</AlertTitle>
+            <AlertDescription>
+              {overviewQuery.error instanceof Error && overviewQuery.error.message.includes("not_configured")
+                ? t('analytics.notConfiguredHint')
+                : t('analytics.loadFailedHint')}
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
           <Card className="border-0">
             <CardHeader className="pb-3">

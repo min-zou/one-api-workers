@@ -305,7 +305,10 @@
     "breakdownEmpty": "No ranking data for the current time range",
     "breakdownSuccessRate": "Success {{rate}}",
     "breakdownTokens": "Tokens {{count}}",
-    "breakdownCost": "Cost {{cost}}"
+    "breakdownCost": "Cost {{cost}}",
+    "loadFailed": "Dashboard data failed to load",
+    "loadFailedHint": "An error occurred while querying analytics data. Please try again later. If the problem persists, check the backend service status.",
+    "notConfiguredHint": "CF_API_TOKEN or CF_ACCOUNT_ID environment variables are not configured. Please add these variables in Cloudflare Workers settings (CF_API_TOKEN requires Analytics:Read permission) and redeploy."
   },
   "usageLogs": {
     "title": "Usage Logs",

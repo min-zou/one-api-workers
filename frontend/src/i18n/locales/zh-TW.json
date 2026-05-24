@@ -305,7 +305,10 @@
     "breakdownEmpty": "當前時間範圍暫無維度排行資料",
     "breakdownSuccessRate": "成功率 {{rate}}",
     "breakdownTokens": "消耗 {{count}}",
-    "breakdownCost": "費用 {{cost}}"
+    "breakdownCost": "費用 {{cost}}",
+    "loadFailed": "看板資料載入失敗",
+    "loadFailedHint": "查詢分析資料時發生錯誤，請稍後重試。如果問題持續存在，請檢查後端服務狀態。",
+    "notConfiguredHint": "未設定 CF_API_TOKEN 或 CF_ACCOUNT_ID 環境變數，無法查詢分析資料。請在 Cloudflare Workers 設定中新增這兩個變數（CF_API_TOKEN 需要 Analytics:Read 權限），然後重新部署。"
   },
   "usageLogs": {
     "title": "使用日誌",

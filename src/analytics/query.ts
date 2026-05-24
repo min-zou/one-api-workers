@@ -61,6 +61,13 @@ type UsageLogQueryParams = {
 
 export class AnalyticsQueryValidationError extends Error {}
 
+export class AnalyticsQueryNotConfiguredError extends Error {
+    constructor(message?: string) {
+        super(message || "Analytics query is not configured");
+        this.name = "AnalyticsQueryNotConfiguredError";
+    }
+}
+
 const USAGE_LOG_PAGE_SIZE = 50;
 
 const RANGE_CONFIG: Record<AnalyticsRange, RangeConfig> = {
@@ -416,7 +423,7 @@ const runAnalyticsQueryRaw = async <T extends Record<string, unknown>>(
     query: string
 ): Promise<AnalyticsQueryRawResult<T>> => {
     if (!c.env.CF_API_TOKEN || !c.env.CF_ACCOUNT_ID) {
-        throw new Error("CF analytics query credentials are not configured");
+        throw new AnalyticsQueryNotConfiguredError("CF_API_TOKEN or CF_ACCOUNT_ID is not configured. Please set these environment variables to enable analytics queries.");
     }
 
     const api = `https://api.cloudflare.com/client/v4/accounts/${c.env.CF_ACCOUNT_ID}/analytics_engine/sql`;

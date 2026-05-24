@@ -5,6 +5,7 @@ import { z } from "zod";
 import { CommonErrorResponse, CommonSuccessfulResponse } from "../model";
 import {
     AnalyticsQueryValidationError,
+    AnalyticsQueryNotConfiguredError,
     queryUsageOverview,
     queryUsageTrend,
     queryUsageBreakdown,
@@ -19,6 +20,13 @@ const toErrorResponse = (
     error: unknown,
     fallbackMessage: string
 ) => {
+    if (error instanceof AnalyticsQueryNotConfiguredError) {
+        return c.json({
+            success: false,
+            error: "not_configured",
+            message: error.message,
+        } as CommonResponse, 503);
+    }
     const message = error instanceof Error ? error.message : fallbackMessage;
     const status = error instanceof AnalyticsQueryValidationError ? 400 : 500;
     return c.text(message, status);
