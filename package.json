@@ -8,8 +8,8 @@
     "dev:web": "bun run --filter frontend dev",
     "dev:worker": "wrangler dev --config wrangler.local.jsonc --local --host localhost",
     "build": "bun run --filter frontend build",
-    "deploy": "bun run build && wrangler deploy --config wrangler.jsonc",
-    "cf-typegen": "wrangler types --config wrangler.jsonc --include-env=false"
+    "deploy": "bun run build && wrangler deploy --config wrangler.toml",
+    "cf-typegen": "wrangler types --config wrangler.toml --include-env=false"
   },
   "repository": {
     "type": "git",

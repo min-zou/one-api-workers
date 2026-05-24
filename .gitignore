@@ -19,6 +19,7 @@ node_modules/
 .env
 .env.production
 .dev.vars
+*.env
 
 # logs
 logs/
@@ -32,4 +33,9 @@ lerna-debug.log*
 .DS_Store
 public*/
 bun.lock
+bun.lockb
 *.local.jsonc
+*.toml.local
+
+# database
+init.sql
