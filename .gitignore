@@ -20,6 +20,7 @@ node_modules/
 .env.production
 .dev.vars
 *.env
+secret.txt
 
 # logs
 logs/
@@ -36,6 +37,10 @@ bun.lock
 bun.lockb
 *.local.jsonc
 *.toml.local
+
+# config with secrets
+wrangler.toml
+secret.txt
 
 # database
 init.sql
