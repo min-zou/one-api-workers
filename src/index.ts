@@ -32,6 +32,29 @@ const API_DOC_ROUTE_PATHS = new Set([
 ])
 type AppContext = Context<HonoCustomType>
 
+const isLocalDevOrigin = (origin: string): boolean => {
+    try {
+        const url = new URL(origin);
+        return LOCAL_DEV_HOSTNAMES.has(url.hostname) || url.hostname === 'localhost';
+    } catch {
+        return false;
+    }
+}
+
+const corsOriginResolver = (origin: string, c: AppContext) => {
+    if (!origin) return '*';
+
+    if (isLocalDevOrigin(origin)) return origin;
+
+    const requestHost = c.req.header('host') || new URL(c.req.url).host;
+    try {
+        const originHost = new URL(origin).host;
+        if (originHost === requestHost) return origin;
+    } catch {}
+
+    return '';
+}
+
 function isApiRequest(pathname: string): boolean {
     return pathname === '/api'
         || pathname === '/v1'
@@ -99,12 +122,39 @@ const openapi = fromHono(app, {
 });
 
 // cors
-openapi.use('/*', cors());
+openapi.use('/*', cors({
+    origin: corsOriginResolver as any,
+    credentials: true,
+    maxAge: 86400,
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowHeaders: ['Content-Type', 'Authorization', 'x-api-key', 'x-admin-token', 'x-channel-key'],
+}));
 
 app.use('*', async (c, next) => {
     const lang = resolveLanguage(c)
     c.set('lang', lang)
     await next()
+})
+
+app.use('*', async (c, next) => {
+    await next()
+
+    const res = c.res;
+    const isApiPath = c.req.path.startsWith('/api/') || c.req.path.startsWith('/v1/');
+
+    if (isApiPath) {
+        res.headers.set('X-Content-Type-Options', 'nosniff');
+        res.headers.set('X-Frame-Options', 'DENY');
+        res.headers.set('Cache-Control', 'no-store');
+        res.headers.set('Pragma', 'no-cache');
+    }
+
+    if (c.req.url.startsWith('https://')) {
+        res.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+    }
+
+    res.headers.set('X-Request-Id', crypto.randomUUID());
+    res.headers.delete('X-Powered-By');
 })
 
 app.use('*', async (c, next) => {
@@ -142,7 +192,7 @@ app.use('*', async (c, next) => {
 // global error handler
 openapi.onError((err, c) => {
   console.error(err)
-  return c.text(`${err.name} ${err.message}`, 500)
+  return c.text('Internal Server Error', 500)
 })
 
 openapi.route('/', providerApi)

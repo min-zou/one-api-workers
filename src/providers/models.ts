@@ -39,7 +39,7 @@ export class ModelsEndpoint extends OpenAPIRoute {
     async handle(c: Context<HonoCustomType>) {
         const apiKey = getApiKeyFromHeaders(c);
         if (!apiKey) {
-            return c.json({ object: "list", data: [] });
+            return c.text("Authorization header or x-api-key not found", 401);
         }
 
         const tokenInfo = await fetchTokenData(c, apiKey);
